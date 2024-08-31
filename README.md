@@ -1,2 +1,4 @@
 # ResourceMgrForRasPi
-Resource maneger for raspberry-pi
+## 概要
+ラズベリーパイ上で動く、簡易的なリソースモニターです。<br>
+...今思ったのですがこれ"マネージャー"ではないきｇ(((((<br>
