@@ -281,6 +281,7 @@ namespace ResourceMgrForRasPi
                     Console.BackgroundColor = ConsoleColor.Red;
                 }
                 Console.Write('▂');
+                Console.ResetColor();
             }
             Console.WriteLine();
             Console.ResetColor();
@@ -338,6 +339,7 @@ namespace ResourceMgrForRasPi
                     Console.BackgroundColor = ConsoleColor.Red;
                 }
                 Console.Write('▂');
+                Console.ResetColor();
             }
             Console.WriteLine();
             Console.ResetColor();
@@ -377,6 +379,7 @@ namespace ResourceMgrForRasPi
                     Console.ForegroundColor = ConsoleColor.Red;
                 }
                 Console.Write('▂');
+                Console.ResetColor();
             }
             Console.WriteLine();
             Console.ResetColor();
@@ -413,6 +416,7 @@ namespace ResourceMgrForRasPi
                     Console.ForegroundColor = ConsoleColor.Red;
                 }
                 Console.Write('▂');
+                Console.ResetColor();
             }
             Console.WriteLine();
             Console.ResetColor();
