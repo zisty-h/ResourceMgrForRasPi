@@ -21,6 +21,7 @@ RMFRInstallerフォルダー内のファイルはインストーラーの<br>
 ### 必須アプリ
  - .NET8 Runtime
  - sysstat
+ - 
 導入方法は各自で検索してください。
 
 ### Use
