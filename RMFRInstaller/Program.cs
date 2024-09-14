@@ -1,8 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.Net.NetworkInformation;
+﻿using System.Diagnostics;
 using System.Reflection;
-using System.Xml;
 
 namespace RMFR_Installer
 {
