@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Net.NetworkInformation;
 
 namespace ResourceMgrForRasPi
@@ -16,7 +15,13 @@ namespace ResourceMgrForRasPi
 
         static async Task Main()
         {
+            Console.CursorVisible = false;
             Console.Clear();
+
+            CPUHistory = "";
+            MemHistory = "";
+            NetSHistory = "";
+            NetRHistory = "";
 
             // 監視の間隔（ミリ秒）
             int interval = 1000;
@@ -29,11 +34,13 @@ namespace ResourceMgrForRasPi
             Console.WriteLine("│RMFR(Resource-Mgr-For-RaspberryPi)│");
             Console.WriteLine("+──────────────────────────────────+");
             Console.WriteLine("Now loading. Plese wait....(Initlazzing....)");
-            
+
 
 
             while (true)
             {
+                Console.CursorVisible = false;
+
                 // 非同期で情報を取得
                 var cpuUsageTask = GetCpuUsageAsync();
                 var memoryUsageTask = Task.Run(() => GetMemoryUsage());
@@ -42,32 +49,11 @@ namespace ResourceMgrForRasPi
                 // 1秒待機
                 var delayTask = Task.Delay(interval);
 
+                await CheckKey();
+
                 await delayTask;
 
-                // キー入力処理
-                if (Console.KeyAvailable)
-                {
-                    var key = Console.ReadKey(true).Key;
-                    if (key == ConsoleKey.E)
-                    {
-                        Console.Clear();
-                        Console.Write("Exit?[y/n]> ");
-                        if (Console.ReadLine()?.Trim().ToLower() == "y")
-                        {
-                            Console.Clear();
-                            break;
-                        }
-                        Console.Clear();
-                    }
-                    else if (key == ConsoleKey.R)
-                    {
-                        CPUHistory = "";
-                        MemHistory = "";
-                        NetSHistory = "";
-                        NetRHistory = "";
-                        Console.Clear();
-                    }
-                }
+                await CheckKey();
 
                 // コンソールのカーソル位置を初期化
                 Console.SetCursorPosition(0, 3);
@@ -263,6 +249,7 @@ namespace ResourceMgrForRasPi
 
             for (int i = 0; i < CPUHistory.Length; i++)
             {
+                Console.ResetColor();
                 if (CPUHistory[i] == '0')
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -288,7 +275,7 @@ namespace ResourceMgrForRasPi
             Console.WriteLine();
         }
 
-        static void DisplayMemStatus(float usedMemory,float totalMemory)
+        static void DisplayMemStatus(float usedMemory, float totalMemory)
         {
             var memoryUsagePercent = (usedMemory / totalMemory) * 100;
             Console.Write($"Memory Usage:\t");
@@ -321,6 +308,7 @@ namespace ResourceMgrForRasPi
 
             for (int i = 0; i < MemHistory.Length; i++)
             {
+                Console.ResetColor();
                 if (MemHistory[i] == '0')
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -351,7 +339,7 @@ namespace ResourceMgrForRasPi
             // 送信状態を表示
             Console.SetCursorPosition(0, Console.CursorTop);
             Console.Write("Sending:\t");
-            if (bytesSentDelta > 0) 
+            if (bytesSentDelta > 0)
             {
                 NetSHistory = "1" + NetSHistory;
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -370,11 +358,12 @@ namespace ResourceMgrForRasPi
             }
             for (int i = 0; i < NetSHistory.Length; i++)
             {
+                Console.ResetColor();
                 if (NetSHistory[i] == '1')
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                 }
-                else 
+                else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                 }
@@ -407,6 +396,7 @@ namespace ResourceMgrForRasPi
             }
             for (int i = 0; i < NetRHistory.Length; i++)
             {
+                Console.ResetColor();
                 if (NetRHistory[i] == '1')
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -443,7 +433,52 @@ namespace ResourceMgrForRasPi
             }
         }
 
-        
+        public static async Task CheckKey()
+        {
+            // キー入力処理
+            if (Console.KeyAvailable)
+            {
+                Console.CursorVisible = true;
+
+                var key = Console.ReadKey(true).Key;
+                if (key == ConsoleKey.E)
+                {
+                    Console.Clear();
+                    Console.Write("Exit?[y/n]> ");
+                    if (Console.ReadLine()?.Trim().ToLower() == "y")
+                    {
+                        Console.Clear();
+                        Environment.Exit(0);
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.SetCursorPosition(0, 0);
+                        Console.WriteLine("+──────────────────────────────────+");
+                        Console.WriteLine("│RMFR(Resource-Mgr-For-RaspberryPi)│");
+                        Console.WriteLine("+──────────────────────────────────+");
+                    }
+                }
+                else if (key == ConsoleKey.R)
+                {
+                    Console.Clear();
+
+                    Console.SetCursorPosition(0, 0);
+
+                    Console.WriteLine("+──────────────────────────────────+");
+                    Console.WriteLine("│RMFR(Resource-Mgr-For-RaspberryPi)│");
+                    Console.WriteLine("+──────────────────────────────────+");
+                    Console.WriteLine("Now loading. Plese wait....(Initlazzing....)");
+
+                    CPUHistory = "";
+                    MemHistory = "";
+                    NetSHistory = "";
+                    NetRHistory = "";
+
+                    Console.SetCursorPosition(0, 3);
+                }
+            }
+        }
 
         static string FormatMemory(float memory) => $"{memory:00.00}";
         static string FormatPercentage(float percentage) => $"{percentage:00.00}";
