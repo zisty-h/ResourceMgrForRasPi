@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO.Compression;
 using System.Reflection;
 
 namespace RMFR_Installer
@@ -26,7 +27,7 @@ namespace RMFR_Installer
             string pathInp = Console.ReadLine();
             Console.WriteLine();
 
-
+            string outputFilePath = "";
             try
             {
                 Assembly assembly = Assembly.GetExecutingAssembly();
@@ -34,7 +35,7 @@ namespace RMFR_Installer
 
                 List<string> resourceNames = new List<string>(assembly.GetManifestResourceNames());
 
-                string outputFilePath = Path.Combine(pathInp, "rmfr");
+                outputFilePath = Path.Combine(pathInp, "rmfr");
                 if (pathInp == "" || pathInp == null)
                 {
                     outputFilePath = Path.Combine("/usr/bin", "rmfr");
@@ -48,6 +49,11 @@ namespace RMFR_Installer
                         return;
                     }
 
+                    if (File.Exists(outputFilePath))
+                    {
+                        File.Delete(outputFilePath);
+                    }
+
                     // ファイルとして書き込む
                     using (FileStream fileStream = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
                     {
@@ -58,8 +64,8 @@ namespace RMFR_Installer
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        FileName = "chmod",
-                        Arguments = "777 " + outputFilePath,
+                        FileName = "sudo",
+                        Arguments = "chmod a+x " + outputFilePath,
                         RedirectStandardOutput = true,
                         RedirectStandardError = true,
                         UseShellExecute = false,
@@ -76,6 +82,8 @@ namespace RMFR_Installer
             Console.WriteLine() ;
             Console.WriteLine("Done!");
             Console.WriteLine("Try it:\trmfr");
+            Console.WriteLine();
+            Console.WriteLine($"If you can't run rmfr, Plese try \"sudo chmod 777 {outputFilePath}\" ");
         }
 
         static bool IsRunningAsRoot()
